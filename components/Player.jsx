@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from "next/link";
 import Image from "next/image";
 import useSWR from "swr";
 import fetcher from "../lib/fetcher";
-import { TbPlayerSkipForwardFilled, TbPlayerSkipBackFilled, TbPlayerPauseFilled } from 'react-icons/tb';
+import { TbPlayerSkipForwardFilled, TbPlayerSkipBackFilled, TbPlayerPauseFilled, TbPlayerPlayFilled } from 'react-icons/tb';
 
 function NotPlaying() {
   return (
@@ -19,7 +19,14 @@ function NotPlaying() {
 }
 
 function WhenPlaying({ song }) {
-  console.log(song)
+  const [paused, setPaused] = useState(false);
+
+  function handlePause() {
+    !paused
+    ? setPaused(true)
+    : setPaused(false)
+  }
+
   return (
     <div>
       <div className='absolute text-left p-8 top-0 left-0 h-56 w-1/3'>
@@ -36,8 +43,11 @@ function WhenPlaying({ song }) {
           <button className='flex justify-center items-center text-2xl text-amber-100 h-14 w-20 border border-amber-100 mr-2 rounded-xl hover:bg-amber-100 hover:text-zinc-900 duration-200'>
             <TbPlayerSkipBackFilled />
           </button>
-          <button className='flex justify-center items-center text-2xl text-amber-100 h-14 w-20 border border-amber-100 rounded-xl hover:bg-amber-100 hover:text-zinc-900 duration-200'>
-            <TbPlayerPauseFilled />
+          <button onClick={handlePause} className='flex justify-center items-center text-2xl text-amber-100 h-14 w-20 border border-amber-100 rounded-xl hover:bg-amber-100 hover:text-zinc-900 duration-200'>
+            {!paused 
+              ?<TbPlayerPauseFilled/>
+              :<TbPlayerPlayFilled/>
+            }
           </button>
           <button className='flex justify-center items-center text-2xl text-amber-100 h-14 w-20 border border-amber-100 ml-2 rounded-xl hover:bg-amber-100 hover:text-zinc-900 duration-200'>
             <TbPlayerSkipForwardFilled />
@@ -55,7 +65,7 @@ function WhenPlaying({ song }) {
         width={2000}
         height={2000}
         quality={50}
-        className="h-screen w-fit rounded-full animate-[spin_30s_linear_infinite]"
+        className={!paused ? "h-screen w-fit rounded-full animate-[spin_30s_linear_infinite]" : "h-screen w-fit rounded-full"}
         blurDataURL={song.albumImageUrl}
       />
     </div>
